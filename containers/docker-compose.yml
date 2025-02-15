@@ -1,9 +1,12 @@
-version: '3'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    volumes:
+      - type: bind
+        source: zookeeper/zoo.cfg
+        target: /etc/confluent/docker/zookeeper.properties.template
 
   kafka:
     image: confluentinc/cp-kafka:latest
