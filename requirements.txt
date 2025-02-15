@@ -3,4 +3,4 @@ pyspark==3.3.2          # For Spark-based stream processing
 pytest==7.4.0           # (Optional) For unit testing
 python-dotenv==1.0.0    # To manage environment variables (e.g., API keys)
 textblob==0.17.1        # For basic sentiment analysis on tweet text
-praw==7.7.0            # For accessing the Reddit API
+praw==7.8.1            # For accessing the Reddit API
