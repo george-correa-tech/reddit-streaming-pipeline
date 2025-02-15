@@ -11,7 +11,6 @@ A real-time data pipeline for streaming and processing Twitter data. This projec
 - [Usage](#usage)
 - [Commit Message Guidelines](#commit-message-guidelines)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Overview
 
