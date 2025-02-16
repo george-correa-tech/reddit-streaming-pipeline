@@ -55,17 +55,30 @@ cd reddit-streaming-pipeline
 ### Set Up a Virtual Environment:
 
 ```bash
-Copy
 python3 -m venv .venv
 source .venv/bin/activate  # On Windows, use `.venv\Scripts\activate`
 ```
 
 ### Install Dependencies:
-
+1. **Install Python Requirements:**
 ```bash
-Copy
 pip install -r requirements.txt
 ```
+2. **Install Apache Spark: Use Homebrew to install the full Spark distribution:**
+
+```bash
+brew install apache-spark
+````
+3. **Verify Spark Installation: Ensure spark-submit points to the Homebrew version:**
+
+```bash
+spark-submit --version
+```
+---
+
+#### Why This Works:
+- **`pyspark` for Python Libraries:** This provides the Python API to Spark and allows developers to use it in virtual environments.  
+- **Homebrew Spark for Binaries:** `spark-submit` and related binaries from the full Spark distribution handle job submission and external dependencies like the Kafka connector.
 
 ### Configure Environment Variables:
 

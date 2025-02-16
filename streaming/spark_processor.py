@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, window, avg, udf
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType
+from pyspark.sql.functions import from_json, col, window, avg, udf, from_unixtime
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType
 from textblob import TextBlob
 
 # Define the schema to match your JSON messages.
@@ -8,7 +8,7 @@ schema = StructType([
     StructField("id", StringType(), True),
     StructField("title", StringType(), True),
     StructField("selftext", StringType(), True),
-    StructField("created_utc", StringType(), True),
+    StructField("created_utc", DoubleType(), True),
     StructField("url", StringType(), True),
     StructField("author", StringType(), True)
 ])
@@ -26,6 +26,7 @@ sentiment_udf = udf(get_sentiment)
 if __name__ == "__main__":
     spark = SparkSession.builder \
         .appName("RedditStreamProcessor") \
+        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2") \
         .getOrCreate()
 
     # Read streaming data from Kafka topic 'reddit_stream'.
@@ -43,7 +44,7 @@ if __name__ == "__main__":
     processed_df = parsed_df.withColumn("sentiment", sentiment_udf(col("title")))
 
     # Convert 'created_utc' to a timestamp. Adjust this conversion if needed.
-    processed_df = processed_df.withColumn("created_at", col("created_utc").cast(TimestampType()))
+    processed_df = processed_df.withColumn("created_at", from_unixtime(col("created_utc").cast("long")).cast("timestamp"))
 
     # Aggregate sentiment over 1-minute windows.
     aggregated_df = processed_df.groupBy(window(col("created_at"), "1 minute")) \
