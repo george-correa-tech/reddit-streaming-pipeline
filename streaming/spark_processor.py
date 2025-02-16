@@ -26,7 +26,8 @@ sentiment_udf = udf(get_sentiment)
 if __name__ == "__main__":
     spark = SparkSession.builder \
         .appName("RedditStreamProcessor") \
-        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2") \
+        .config("spark.jars.packages",
+                "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2,org.elasticsearch:elasticsearch-spark-30_2.12:8.7.0") \
         .getOrCreate()
 
     # Read streaming data from Kafka topic 'reddit_stream'.
@@ -51,9 +52,14 @@ if __name__ == "__main__":
                                 .agg(avg("sentiment").alias("avg_sentiment"))
 
     # Write the aggregated results to the console for testing.
-    query = aggregated_df.writeStream \
-                         .outputMode("update") \
-                         .format("console") \
-                         .start()
+    query = processed_df.writeStream \
+        .outputMode("append") \
+        .format("org.elasticsearch.spark.sql") \
+        .option("checkpointLocation", "/tmp/spark-checkpoints") \
+        .option("es.nodes", "localhost") \
+        .option("es.port", "9200") \
+        .option("es.nodes.wan.only", "true") \
+        .option("es.resource", "reddit_sentiment/_doc") \
+        .start()
 
     query.awaitTermination()
