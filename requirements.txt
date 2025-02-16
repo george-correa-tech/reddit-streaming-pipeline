@@ -1,5 +1,5 @@
 kafka-python==2.0.3     # For interfacing with Apache Kafka
-pyspark==3.5.4          # For Spark-based stream processing
+pyspark==3.3.4          # For Spark-based stream processing
 pytest==7.4.0           # (Optional) For unit testing
 python-dotenv==1.0.0    # To manage environment variables (e.g., API keys)
 textblob==0.17.1        # For basic sentiment analysis on tweet text
